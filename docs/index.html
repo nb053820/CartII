@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hurricane Impacts on the Louisiana Coast</title>
+<style>
+    html, body{
+        height:100%;
+        width:100%;
+        background-color: "#3333ff"
+    }
+    
+    #viewDiv{
+        padding: 0;
+        left: 0;
+        margin: 0;
+        height: 90%;
+        width: 100%;
+    }
+    
+    #legendDiv{
+        position: absolute;
+        left: 8px;
+        border: 2px solid black;
+        width: 20%;
+        height: 90%;
+        background-color: midnightblue
+    }
+    
+    #titleDiv{
+        width: 100%;
+        background-color: black;
+        height: 5%;
+        text-align: center;
+        color: white;
+    }
+    
+    #overviewDiv{
+        position: absolute;
+        top: 95px;
+        right: 20px;
+        width: 450px;
+        height: 300px;
+        border: 1px solid black;
+        z-index: 1;
+    }
+</style>
+    
+<link rel="stylesheet" href="https://js.arcgis.com/4.17/esri/css/main.css">
+    
+<script src="https://js.arcgis.com/4.17/">
+</script>
+    
+    <script>
+        require([
+            "esri/config",
+            "esri/core/urlUtils",
+            "esri/core/watchUtils",
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/layers/FeatureLayer",
+            "esri/layers/VectorTileLayer",
+            "esri/widgets/Search",
+            "esri/widgets/LayerList",
+            "dojo/dom",
+            "dojo/promise/all",
+            "dojo/domReady!"
+        ], function (esriConfig, urlUtils, watchUtils, Map, MapView, FeatureLayer, VectorTileLayer, Search, LayerList, dom, all)
+            {
+                var myMap = new Map();
+                
+                var myView = new MapView({
+                container: "viewDiv",
+                map: myMap,
+                center: [-91.298850, 31.104090],
+                scale: 2900000
+            });
+            
+                var myBasemap = new VectorTileLayer({
+                    url: "https://arts-sciences.maps.arcgis.com/sharing/rest/content/items/14bdba73abae412491a61d767f0497b2/resources/styles/root.json?f=pjson"
+            });
+            
+            myMap.add(myBasemap);
+            
+            
+                var unemployment = new FeatureLayer({
+                    portalItem:{
+                        id: "5156fd54c16f463aad8095c38f12dd22"
+                }
+            });
+            
+            myMap.add(unemployment);
+            
+                var cyclones = new FeatureLayer({
+                    portalItem:{
+                        id: "e1b99f953ae0458bac4c172a04cb927d" 
+                    }
+            });
+            
+            myMap.add(cyclones);
+            
+            
+            var overviewmap = new Map();
+            
+            var smallview = new MapView({
+                container: "overviewDiv",
+                map: overviewmap,
+                center: [-92.4451371, 31.3112936],
+                scale: 4670000,
+                constraints: {
+                    rotationEnabled: false
+                }
+            });
+            
+            smallview.ui.components = [];
+            
+            var myBasemap2 = new VectorTileLayer({
+                    url: "https://arts-sciences.maps.arcgis.com/sharing/rest/content/items/14bdba73abae412491a61d767f0497b2/resources/styles/root.json?f=pjson"
+            });
+            
+            overviewmap.add(myBasemap2);
+            
+            var income = new FeatureLayer({
+               portalItem:{
+                   id: "5750082265e6479c9aa875bacd09cef4"
+               }
+            });
+            
+            overviewmap.add(income);
+            
+            var cyclones2 = new FeatureLayer({
+                    portalItem:{
+                        id: "e1b99f953ae0458bac4c172a04cb927d" 
+                    }
+            });
+            
+            overviewmap.add(cyclones2);
+            
+            const layerList1 = new LayerList({
+                view: myView,
+                container: "legendDiv",
+                listItemCreatedFunction: function(event) {
+                    const item = event.item;
+                    if (item.layer.type !="group") {
+                        item.panel = {
+                            content: "legend",
+                            open: true
+                        };
+                    }
+                }
+            });
+            
+            const layerList2 = new LayerList({
+                view: smallview,
+                container: "legendDiv",
+                listItemCreatedFunction: function(event) {
+                    const item = event.item;
+                    if (item.layer.type !="group") {
+                        item.panel = {
+                            content: "legend",
+                            open: true
+                        };
+                    }
+                }
+            });
+        });
+          
+    </script>
+</head>
+<body>
+<div id="titleDiv"; style="display: table; height: 15px; overflow: hidden;">
+    <h1 style="vertical-align: center">Hurricane Impacts on Louisiana Income</h1></div>
+<div id="viewDiv">
+<div id="overviewDiv">
+    <div id="extentDiv"></div>
+    <div id = "LegendDiv"></div>
+</div>
+<div id="legendDiv"></div>
+</div>
+</body>
+</html>
